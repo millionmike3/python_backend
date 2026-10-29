@@ -1,0 +1,27 @@
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+
+# Database + ORM
+SQLAlchemy==2.0.36
+psycopg2-binary==2.9.9        # PostgreSQL driver (remove if using SQLite)
+alembic==1.13.2
+
+# Security / Auth
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.0
+
+# Pydantic / Validation
+pydantic==2.9.2
+pydantic-settings==2.5.2
+typing-extensions==4.12.2
+
+# CORS / ASGI
+starlette==0.40.0
+
+# Blockchain / Web3
+web3==6.20.1
+
+# Utilities
+python-dotenv==1.0.1
+requests==2.32.3
