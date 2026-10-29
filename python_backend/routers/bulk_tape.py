@@ -5,10 +5,12 @@ import io
 from datetime import datetime
 
 from python_backend.database import SessionLocal
-from models import BulkTape, BulkTapeProperty, Property
-from schemas import BulkTapeOut, BulkTapePropertyOut
-from signals import compute_property_signal_from_dict
-from rbac import require_owner, require_admin
+from python_backend.models import BulkTape, BulkTapeProperty, Property
+
+# FIXED IMPORTS
+from python_backend.schemas import BulkTapeOut, BulkTapePropertyOut
+from python_backend.signals import compute_property_signal_from_dict
+from python_backend.rbac import require_owner, require_admin
 
 
 router = APIRouter(prefix="/bulk-tape", tags=["Bulk Tape Ingestion"])

@@ -1,3 +1,5 @@
+# python_backend/database.py
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -6,7 +8,9 @@ import os
 # DATABASE URL
 # ============================================================
 
-# Use SQLite locally unless you switch to PostgreSQL
+# Priority:
+# 1. Railway / Docker / Production: DATABASE_URL env var
+# 2. Local development: SQLite fallback
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
 
 # ============================================================
@@ -18,13 +22,13 @@ connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=False,              # Set to True if you want SQL logs
+    echo=False,          # Set to True for SQL debugging
     future=True,
     connect_args=connect_args
 )
 
 # ============================================================
-# SESSION
+# SESSION FACTORY
 # ============================================================
 
 SessionLocal = sessionmaker(
@@ -41,15 +45,27 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 # ============================================================
-# UTILITY: GET DB SESSION
+# FASTAPI DEPENDENCY
 # ============================================================
 
 def get_db():
     """
     FastAPI dependency that yields a database session.
+    Ensures proper cleanup after each request.
     """
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+# ============================================================
+# OPTIONAL: AUTO-CREATE TABLES (if not using Alembic)
+# ============================================================
+
+def init_db():
+    """
+    Creates all tables automatically.
+    Call this from main.py after all models are imported.
+    """
+    Base.metadata.create_all(bind=engine)

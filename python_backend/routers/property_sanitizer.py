@@ -18,7 +18,8 @@ from python_backend.schemas import (
     BulkTapeOut,
     BulkTapePropertyOut,
 )
-from python_backend.signals import compute_property_signal
+from python_backend.signals import compute_property_signal_from_dict
+
 from python_backend.rbac import require_investor, require_owner, require_admin
 
 

@@ -11,11 +11,9 @@ from python_backend.schemas import (
     MerkleAnchorRequest, MerkleAnchorOut
 )
 from python_backend.merkle import build_merkle_root_for_properties
-from .blockchain import anchor_merkle_root_on_polygon
+from python_backend.blockchain import anchor_merkle_root_on_polygon
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 
 
 def hash_password(password: str) -> str:

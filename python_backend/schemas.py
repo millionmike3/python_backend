@@ -1,24 +1,26 @@
+# python_backend/schemas.py
+
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
 # ============================================================
-# USER + AUTH SCHEMAS
+# USER + AUTH
 # ============================================================
+
 class UserCreate(BaseModel):
     username: str
     email: Optional[str] = None
     phone: Optional[str] = None
     password: str
-    role: str  # BORROWER, INVESTOR, OWNER, ADMIN
+    role: str
     domain_id: Optional[int] = None
+
 
 class UserLogin(BaseModel):
     username: str
     password: str
 
-class XPUpdate(BaseModel):
-    xp: int
 
 class UserOut(BaseModel):
     id: int
@@ -27,21 +29,24 @@ class UserOut(BaseModel):
     phone: Optional[str]
     role: str
     domain_id: Optional[int]
-    xp: int
     created_at: datetime
 
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# DOMAIN SCHEMAS
+# DOMAIN
 # ============================================================
+
 class DomainBase(BaseModel):
     name: str
     brand: Optional[str] = None
 
+
 class DomainCreate(DomainBase):
     owner_user_id: int
+
 
 class DomainOut(DomainBase):
     id: int
@@ -51,9 +56,11 @@ class DomainOut(DomainBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# INVESTOR / BORROWER SCHEMAS
+# INVESTOR / BORROWER
 # ============================================================
+
 class InvestorOut(BaseModel):
     id: int
     user_id: int
@@ -62,6 +69,7 @@ class InvestorOut(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class BorrowerOut(BaseModel):
     id: int
@@ -72,19 +80,28 @@ class BorrowerOut(BaseModel):
     class Config:
         from_attributes = True
 
+
+## ============================================================
+# BRAND PROFILE
 # ============================================================
-# BRAND PROFILE SCHEMAS
-# ============================================================
+
 class BrandProfileBase(BaseModel):
     domain: str
-    bank_name: str
+    logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+
 
 class BrandProfileCreate(BrandProfileBase):
     pass
 
+
 class BrandProfileUpdate(BaseModel):
     domain: Optional[str] = None
-    bank_name: Optional[str] = None
+    logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
+    secondary_color: Optional[str] = None
+
 
 class BrandProfileOut(BrandProfileBase):
     id: int
@@ -93,16 +110,20 @@ class BrandProfileOut(BrandProfileBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# PROPERTY SCHEMAS
+# PROPERTY
 # ============================================================
+
 class PropertyBase(BaseModel):
     address: str
     price: float
     domain_id: int
 
+
 class PropertyCreate(PropertyBase):
     pass
+
 
 class PropertyOut(PropertyBase):
     id: int
@@ -111,35 +132,49 @@ class PropertyOut(PropertyBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# BULK TAPE SCHEMAS
+# BULK TAPE
 # ============================================================
-class BulkTapeOut(BaseModel):
-    id: int
+
+class BulkTapeBase(BaseModel):
     domain_id: int
     file_url: str
+
+
+class BulkTapeCreate(BulkTapeBase):
+    pass
+
+
+class BulkTapeOut(BulkTapeBase):
+    id: int
     created_at: datetime
 
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# BULK TAPE PROPERTY SCHEMAS
+# BULK TAPE PROPERTY
 # ============================================================
+
 class BulkTapePropertyBase(BaseModel):
     bulk_tape_id: int
     address: str
     price: float
     domain_id: int
 
+
 class BulkTapePropertyCreate(BulkTapePropertyBase):
     pass
+
 
 class BulkTapePropertyUpdate(BaseModel):
     bulk_tape_id: Optional[int] = None
     address: Optional[str] = None
     price: Optional[float] = None
     domain_id: Optional[int] = None
+
 
 class BulkTapePropertyOut(BulkTapePropertyBase):
     id: int
@@ -148,9 +183,11 @@ class BulkTapePropertyOut(BulkTapePropertyBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# USER VAULT SCHEMAS
+# USER VAULT
 # ============================================================
+
 class UserVaultOut(BaseModel):
     id: int
     user_id: int
@@ -160,21 +197,26 @@ class UserVaultOut(BaseModel):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# CREDIT REPORT SUMMARY SCHEMAS
+# CREDIT REPORT SUMMARY
 # ============================================================
+
 class CreditReportSummaryBase(BaseModel):
     user_id: int
     domain_id: int
     score: int
     provider: str
 
+
 class CreditReportSummaryCreate(CreditReportSummaryBase):
     pass
+
 
 class CreditReportSummaryUpdate(BaseModel):
     score: Optional[int] = None
     provider: Optional[str] = None
+
 
 class CreditReportSummaryOut(CreditReportSummaryBase):
     id: int
@@ -183,22 +225,27 @@ class CreditReportSummaryOut(CreditReportSummaryBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# MORTGAGE APPLICATION SCHEMAS
+# MORTGAGE APPLICATION
 # ============================================================
+
 class MortgageApplicationBase(BaseModel):
     user_id: int
     domain_id: int
     property_id: int
     loan_amount: float
-    status: str  # PENDING, APPROVED, REJECTED
+    status: str
+
 
 class MortgageApplicationCreate(MortgageApplicationBase):
     pass
 
+
 class MortgageApplicationUpdate(BaseModel):
     loan_amount: Optional[float] = None
     status: Optional[str] = None
+
 
 class MortgageApplicationOut(MortgageApplicationBase):
     id: int
@@ -207,21 +254,26 @@ class MortgageApplicationOut(MortgageApplicationBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# SIGNAL SCHEMAS
+# SIGNALS
 # ============================================================
+
 class SignalBase(BaseModel):
     user_id: int
     domain_id: int
     type: str
     message: str
 
+
 class SignalCreate(SignalBase):
     pass
+
 
 class SignalUpdate(BaseModel):
     type: Optional[str] = None
     message: Optional[str] = None
+
 
 class SignalOut(SignalBase):
     id: int
@@ -230,21 +282,26 @@ class SignalOut(SignalBase):
     class Config:
         from_attributes = True
 
+
 # ============================================================
-# PROOF OF FUNDS SCHEMAS
+# PROOF OF FUNDS
 # ============================================================
+
 class ProofOfFundsBase(BaseModel):
     user_id: int
     domain_id: int
     amount: float
     institution: str
 
+
 class ProofOfFundsCreate(ProofOfFundsBase):
     pass
+
 
 class ProofOfFundsUpdate(BaseModel):
     amount: Optional[float] = None
     institution: Optional[str] = None
+
 
 class ProofOfFundsOut(ProofOfFundsBase):
     id: int
@@ -252,12 +309,11 @@ class ProofOfFundsOut(ProofOfFundsBase):
 
     class Config:
         from_attributes = True
+
+
 # ============================================================
-# LOAN ESTIMATE SCHEMAS
+# LOAN ESTIMATE
 # ============================================================
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
 
 class LoanEstimateBase(BaseModel):
     user_id: int
@@ -267,13 +323,16 @@ class LoanEstimateBase(BaseModel):
     interest_rate: float
     term_months: int
 
+
 class LoanEstimateCreate(LoanEstimateBase):
     pass
+
 
 class LoanEstimateUpdate(BaseModel):
     loan_amount: Optional[float] = None
     interest_rate: Optional[float] = None
     term_months: Optional[int] = None
+
 
 class LoanEstimateOut(LoanEstimateBase):
     id: int
@@ -281,12 +340,11 @@ class LoanEstimateOut(LoanEstimateBase):
 
     class Config:
         from_attributes = True
+
+
 # ============================================================
-# CLOSING DISCLOSURE SCHEMAS
+# CLOSING DISCLOSURE
 # ============================================================
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
 
 class ClosingDisclosureBase(BaseModel):
     user_id: int
@@ -296,13 +354,16 @@ class ClosingDisclosureBase(BaseModel):
     closing_costs: float
     cash_to_close: float
 
+
 class ClosingDisclosureCreate(ClosingDisclosureBase):
     pass
+
 
 class ClosingDisclosureUpdate(BaseModel):
     loan_amount: Optional[float] = None
     closing_costs: Optional[float] = None
     cash_to_close: Optional[float] = None
+
 
 class ClosingDisclosureOut(ClosingDisclosureBase):
     id: int
@@ -310,132 +371,83 @@ class ClosingDisclosureOut(ClosingDisclosureBase):
 
     class Config:
         from_attributes = True
+
+
 # ============================================================
-# DISBURSEMENT CHECK SCHEMAS
+# DISBURSEMENT CHECK
 # ============================================================
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
 
 class DisbursementCheckBase(BaseModel):
     user_id: int
     domain_id: int
-    amount: float
-    payee: str
-    memo: Optional[str] = None
-
-class DisbursementCheckCreate(DisbursementCheckBase):
-    pass
-
-class DisbursementCheckUpdate(BaseModel):
-    amount: Optional[float] = None
-    payee: Optional[str] = None
-    memo: Optional[str] = None
-
-class DisbursementCheckOut(DisbursementCheckBase):
-    id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-# ============================================================
-# DIGITAL ASSET SCHEMAS
-# ============================================================
 from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
 
-class DigitalAssetBase(BaseModel):
-    user_id: int
-    domain_id: int
-    name: str
-    type: str        # e.g. TOKEN, NFT, DOCUMENT
-    value: float
-    metadata: Optional[str] = None
-
-class DigitalAssetCreate(DigitalAssetBase):
-    pass
-
-class DigitalAssetUpdate(BaseModel):
-    name: Optional[str] = None
-    type: Optional[str] = None
-    value: Optional[float] = None
-    metadata: Optional[str] = None
-
-class DigitalAssetOut(DigitalAssetBase):
-    id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
 # ============================================================
 # BORROWER SCHEMAS
 # ============================================================
-from pydantic import BaseModel
-from datetime import datetime
 
-class BorrowerBase(BaseModel):
-    user_id: int
+class BorrowerCreate(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    phone: str
     domain_id: int
-
-class BorrowerCreate(BorrowerBase):
-    pass
-
-class BorrowerUpdate(BaseModel):
-    user_id: int | None = None
-    domain_id: int | None = None
-
-class BorrowerOut(BorrowerBase):
-    id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-# ============================================================
-# BORROWER RESPONSE SCHEMA
-# ============================================================
-from pydantic import BaseModel
-from datetime import datetime
 
 class BorrowerResponse(BaseModel):
     id: int
-    user_id: int
+    first_name: str
+    last_name: str
+    email: str
+    phone: str
     domain_id: int
-    created_at: datetime
+    created_at: datetime | None = None
 
     class Config:
-        from_attributes = True
+        orm_mode = True
+
+# ============================================================
+# MERKLE ANCHOR SCHEMAS
+# ============================================================
+
+from pydantic import BaseModel
+from datetime import datetime
 
 class MerkleAnchorRequest(BaseModel):
-    anchor: str
     tape_id: int
+    anchor: str  # e.g., "polygon", "ethereum", etc.
 
 class MerkleAnchorOut(BaseModel):
     tape_id: int
     anchor: str
     merkle_root: str
+    created_at: datetime | None = None
+
+    class Config:
+        from_attributes = True
+
+class DigitalAssetCreate(BaseModel):
+    user_id: int
+    asset_type: str
+    asset_url: str | None = None
+    metadata: dict | None = None
+
+class DigitalAssetCreate(BaseModel):
+    user_id: int
+    asset_type: str
+    asset_url: str | None = None
+    metadata: dict | None = None
+
+
+class DigitalAssetOut(BaseModel):
+    id: int
+    user_id: int
+    asset_type: str
+    asset_url: str | None = None
+    metadata: dict | None = None
     created_at: datetime
 
     class Config:
         from_attributes = True
-
-class BulkTapeBase(BaseModel):
-    domain_id: int
-    file_url: str
-
-class BulkTapeCreate(BaseModel):
-    domain_id: int
-    file_url: str
-
-
-class AdminStatsOut(BaseModel):
-    total_users: int
-    total_domains: int
-    total_properties: int
-    total_bulk_tapes: int
-
-    class Config:
-        from_attributes = True
-
 
 

@@ -1,3 +1,5 @@
+# python_backend/main.py
+
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -17,9 +19,13 @@ from python_backend.routers.bulk_tape import router as bulk_tape_router
 from python_backend.routers.credit import router as credit_router
 from python_backend.routers.underwriting import router as underwriting_router
 from python_backend.routers.panels import router as panels_router
+from python_backend.routers.brand import router as brand_router
+
 
 # Models
-from python_backend.models.users import User, BrandProfile, UserVault, DigitalAsset
+from python_backend.models.users import User, UserVault, DigitalAsset
+from python_backend.models.brand_profile import BrandProfile
+
 
 # Schemas
 from python_backend.schemas import (
@@ -29,16 +35,12 @@ from python_backend.schemas import (
     DigitalAssetCreate, DigitalAssetOut,
 )
 
-# ============================================================
-# APP INIT
-# ============================================================
 app = FastAPI(
     title="Resilient America Lending OS",
     description="Multi-tenant mortgage + property underwriting platform.",
     version="1.0.0",
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -47,12 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create tables
 Base.metadata.create_all(bind=engine)
 
-# ============================================================
-# DB DEPENDENCY
-# ============================================================
+
 def get_db():
     db = SessionLocal()
     try:
@@ -60,9 +59,7 @@ def get_db():
     finally:
         db.close()
 
-# ============================================================
-# ROOT
-# ============================================================
+
 @app.get("/")
 def root():
     return {
@@ -82,9 +79,7 @@ def root():
         ],
     }
 
-# ============================================================
-# AUTH / USERS
-# ============================================================
+
 @app.post("/auth/register", response_model=UserOut)
 def register_user(data: UserCreate, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == data.username).first()
@@ -111,6 +106,7 @@ def register_user(data: UserCreate, db: Session = Depends(get_db)):
 
     return user
 
+
 @app.post("/auth/login", response_model=UserOut)
 def login(data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == data.username).first()
@@ -118,13 +114,12 @@ def login(data: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(401, "Invalid credentials")
     return user
 
+
 @app.get("/auth/me", response_model=UserOut)
 def me(current_user: User = Depends(get_current_user)):
     return current_user
 
-# ============================================================
-# BRAND PROFILE
-# ============================================================
+
 @app.post("/brand", response_model=BrandProfileOut)
 def create_brand(data: BrandProfileCreate, db: Session = Depends(get_db)):
     brand = BrandProfile(**data.dict())
@@ -133,16 +128,16 @@ def create_brand(data: BrandProfileCreate, db: Session = Depends(get_db)):
     db.refresh(brand)
     return brand
 
+
 @app.get("/brand/{domain}", response_model=BrandProfileOut)
 def get_brand(domain: str, db: Session = Depends(get_db)):
     brand = db.query(BrandProfile).filter(BrandProfile.domain == domain).first()
     if not brand:
         raise HTTPException(404, "Brand not found")
+
     return brand
 
-# ============================================================
-# USER VAULT
-# ============================================================
+
 @app.get("/vault/me", response_model=UserVaultOut)
 def my_vault(
     current_user: User = Depends(get_current_user),
@@ -153,9 +148,7 @@ def my_vault(
         raise HTTPException(404, "Vault not found")
     return vault
 
-# ============================================================
-# INCLUDE MODULE ROUTERS
-# ============================================================
+
 app.include_router(domains_router)
 app.include_router(owners_router)
 app.include_router(investors_router)
@@ -166,3 +159,4 @@ app.include_router(bulk_tape_router)
 app.include_router(credit_router)
 app.include_router(underwriting_router)
 app.include_router(panels_router)
+app.include_router(brand_router)
