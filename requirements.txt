@@ -3,7 +3,7 @@ uvicorn[standard]==0.32.0
 
 # Database + ORM
 SQLAlchemy==2.0.36
-psycopg2-binary==2.9.9        # PostgreSQL driver (remove if using SQLite)
+psycopg2-binary==2.9.9
 alembic==1.13.2
 
 # Security / Auth

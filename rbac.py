@@ -8,7 +8,7 @@ from python_backend.database import SessionLocal
 from python_backend.models.users import User
 from python_backend.models.investor import Investor
 from python_backend.models.borrower import Borrower
-from python_backend.models.domain import Domain  # if your file is domains.py, change import
+from python_backend.models.domain import Domain  # change to domains.py if needed
 
 security = HTTPBearer()
 

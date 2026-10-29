@@ -44,6 +44,7 @@ def anchor_merkle_root_on_polygon(property_ids: list[int]) -> Optional[str]:
         if not w3.is_connected():
             raise RuntimeError("Web3 connection failed")
 
+        # Build Merkle root using your backend module
         merkle_root = build_merkle_root_for_properties(property_ids)
 
         contract = w3.eth.contract(
@@ -67,6 +68,5 @@ def anchor_merkle_root_on_polygon(property_ids: list[int]) -> Optional[str]:
         return tx_hash.hex()
 
     except Exception as e:
-        # In production, log error to monitoring
         print(f"Anchor failed: {e}")
         return None
